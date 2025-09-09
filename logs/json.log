@@ -1,0 +1,10 @@
+{
+    "timestampt": "2025-09-09T05:23:01+00:00",
+    "level": "info",
+    "message": "Could not resolve host: www.g.com",
+    "file": "myClass",
+    "class": "myClass",
+    "function": "tset",
+    "request_id": "N\/A",
+    "clientIp": "127.0.0.1"
+}
