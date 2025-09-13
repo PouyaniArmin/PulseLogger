@@ -50,7 +50,7 @@ abstract class Formatter
             'class' => $caller['class'],
             'function' => $caller['function'],
             'request_id' => $_SERVER['HTTP_X_REQUEST_ID'] ?? 'N/A',
-            'clientIp' => $_SERVER['REMOTE_ADDR'] ?? 'N/A',
+            'client_ip' => $_SERVER['REMOTE_ADDR'] ?? 'N/A',
         ];
     }
     abstract public function log(string $level, string $message);
