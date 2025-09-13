@@ -43,7 +43,7 @@ abstract class Formatter
         $caller = $this->findRealCaller($backTrack);
 
         return [
-            'timestampt' => date('c'),
+            'timestamp' => date('c'),
             'level' => $level,
             'message' => $message,
             'file' => $caller['file'],

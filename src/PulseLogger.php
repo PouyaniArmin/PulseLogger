@@ -33,7 +33,7 @@ class PulseLogger
     }
     public function error(string $type, string $message)
     {
-        $this->log($type, 'Erorr', $message);
+        $this->log($type, 'Error', $message);
     }
     public function log($type, string $level, $message)
     {
