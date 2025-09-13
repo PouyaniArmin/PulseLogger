@@ -29,7 +29,7 @@ abstract class Formatter
         foreach ($debug_backtrace as $frame) {
             if (isset($frame['class']) && !in_array($frame['class'], $this->internalClasses())) {
                 $data = [
-                    'file' => $frame['class'] ?? '-',
+                    'file' => $frame['file'] ?? '-',
                     'class' => $frame['class'] ?? '-',
                     'function' => $frame['function'] ?? '-'
                 ];
