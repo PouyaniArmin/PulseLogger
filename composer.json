@@ -1,21 +1,21 @@
-{
-    "name": "armin/pulse-logger",
-    "description": "PulseLogger is a lightweight and flexible PHP logging library.",
-    "type": "library",
-    "autoload": {
-        "psr-4": {
-            "Armin\\PulseLogger\\": "src/"
+    {
+        "name": "pouyaniarmin/pulse-logger",
+        "description": "PulseLogger is a lightweight and flexible PHP logging library.",
+        "type": "library",
+        "autoload": {
+            "psr-4": {
+                "Armin\\PulseLogger\\": "src/"
+            }
+        },
+        "license": "MIT",
+        "authors": [
+            {
+                "name": "PouyaniArmin",
+                "email": "pouyaniarmin@gmail.com"
+            }
+        ],
+        "minimum-stability": "stable",
+        "require": {
+            "php":">=8.1"
         }
-    },
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "PouyaniArmin",
-            "email": "pouyaniarmin@gmail.com"
-        }
-    ],
-    "minimum-stability": "stable",
-    "require": {
-        "php":">=8.1"
     }
-}
