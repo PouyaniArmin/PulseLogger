@@ -2,15 +2,16 @@
 
 namespace Armin\PulseLogger\Handler;
 
-class JsonFileHandler
+class JsonFileHandler extends FileHandler
 {
-    public function __construct(mixed $data)
+
+    public function __construct(?string $basePath=null)
     {
-        $path = dirname(__DIR__,2) . '/logs';
-        if (!is_dir($path)) {
-            mkdir($path, 0777, true);
-        }
-        $json = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-        file_put_contents($path . '/json.log', $json, FILE_APPEND);
+        parent::__construct($basePath);
+    }
+    public function writeJson(mixed $data)
+    {
+        $json=json_encode($data,JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        $this->write('json.log',$json."\n");
     }
 }

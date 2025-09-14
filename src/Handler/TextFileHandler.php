@@ -3,16 +3,15 @@
 
 namespace Armin\PulseLogger\Handler;
 
-class TextFileHandler
+class TextFileHandler extends FileHandler
 {
-    public function __construct(mixed $data)
+    
+    public function __construct(?string $basePath = null)
     {
-
-        $path = dirname(__DIR__, 2) . '/logs';
-        if (!is_dir($path)) {
-            mkdir($path, 0777, true);
-        }
-        $separator="\n------------------------------------------\n";
-        file_put_contents($path . '/app.log', rtrim($data).$separator,FILE_APPEND);
+        parent::__construct($basePath);
+    }
+    public function writeText(mixed $data)
+    {
+        $this->write('app.log', $data);
     }
 }
