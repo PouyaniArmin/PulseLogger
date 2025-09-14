@@ -4,7 +4,6 @@ namespace Armin\PulseLogger\Formatter;
 
 abstract class Formatter
 {
-
     private string $format = "
     Timestamp: %s
     Level: %s
