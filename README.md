@@ -2,16 +2,17 @@
 
 PulseLogger is a lightweight and easy-to-use PHP logging library.  
 It supports **text and JSON logging**, provides detailed log metadata, and follows the **Singleton pattern** for consistent logging across your application.
+
 ## Features
 
 | Feature | Description |
 |---------|-------------|
-| Singleton Logger | Consistent logging across the application |
-| TextFormatter & JsonFormatter | Supports both text and JSON output |
-| Configurable Log Path | Easy to set your preferred log directory |
-| Detailed Metadata | Timestamp, Level, Message, File, Class, Function, Request ID, Client IP |
-| JSON Lines | Each JSON entry is a single object, easy for programmatic processing |
-| Text Separator | Adds a separator line for readability in text logs |
+| Singleton Logger | Consistent logging across the application. Calling `getInstance()` always returns the same logger instance. |
+| TextFormatter & JsonFormatter | Supports both text and JSON output. |
+| Configurable Log Path | The log path must be initialized once using `init()` before logging. |
+| Detailed Metadata | Timestamp, Level, Message, File, Class, Function, Request ID, Client IP. |
+| JSON Lines | Each JSON entry is a single object, easy for programmatic processing. |
+| Text Separator | Adds a separator line for readability in text logs. |
 
 ## Usage / Examples
 
@@ -22,9 +23,9 @@ require_once "./vendor/autoload.php";
 
 use Armin\PulseLogger\PulseLogger;
 
-// Set log path (optional)
+// Initialize logger with mandatory log path
 $logger = PulseLogger::getInstance();
-$logger->setLogPath(__DIR__ . '/logs');
+$logger->init(__DIR__ . '/logs');
 
 // Log info message in text format
 $logger->info('text', 'This is an info message.');
@@ -45,7 +46,7 @@ class MyClass
 
         if (curl_errno($ch)) {
             $logger = PulseLogger::getInstance();
-            $logger->setLogPath(__DIR__ . '/logs');
+            $logger->init(__DIR__ . '/logs'); // Initialize log path
             $logger->info('text', curl_error($ch));
         }
 
@@ -53,6 +54,7 @@ class MyClass
         echo $response;
     }
 }
+
 ```
 
 ## Log Files / Output
