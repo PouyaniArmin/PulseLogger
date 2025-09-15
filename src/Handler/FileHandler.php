@@ -1,7 +1,11 @@
-<?php 
+<?php
 
 
 namespace Armin\PulseLogger\Handler;
+
+use Exception;
+use Throwable;
+
 /**
  * Base class for all file handlers.
  * Provides common logic to write content to a file.
@@ -12,21 +16,23 @@ class FileHandler
      * Base directory path where log files will be stored.
      */
     private string $basePath;
-
     /**
      * Constructor.
+     * 
      * Initializes the base path for log storage. 
-     * If no path is provided, defaults to 'logs' directory three levels up.
+     * The base path is mandatory; if it is not provided, an exception is thrown.
+     * Also ensures that the directory exists; if not, it attempts to create it.
      *
-     * @param string|null $basePath Optional base path for logs
+     * @param string|null $basePath Optional base path for logs (must be provided)
+     * @throws Exception if $basePath is not provided
      */
     public function __construct(?string $basePath = null)
     {
-        if ($basePath) {
-            $this->basePath = rtrim($basePath, '/');
-        } else {
-            $this->basePath = dirname(__DIR__, 3) . '/logs';
+        if (!$basePath) {
+            throw new Exception("BasePath for logs must be provided. Logging aborted.");
         }
+        $this->basePath = rtrim($basePath, '/');
+
 
         // Create the directory if it does not exist
         if (!is_dir($this->basePath)) {
