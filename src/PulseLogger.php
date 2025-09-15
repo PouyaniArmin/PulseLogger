@@ -8,6 +8,7 @@ use Armin\PulseLogger\Formatter\TextFormatter;
 use Armin\PulseLogger\Handler\FileHandler;
 use Armin\PulseLogger\Handler\TextFileHandler;
 use Exception;
+
 /**
  * Singleton Logger class to manage logging in different formats (Text/JSON).
  */
@@ -66,15 +67,19 @@ class PulseLogger
         }
         return self::$pulseLogger = new PulseLogger();
     }
-
     /**
-     * Set the base path for log storage
-     *
-     * @param string $path Path to store logs
+     * Initialize the logger with a mandatory log path.
+     * 
+     * @param string $path Absolute or relative path where logs should be stored.
+     * @throws Exception if the provided path is empty.
      */
-    public function setLogPath(string $path)
+
+    public function init(string $path)
     {
-        $this->logPath = $path;
+        if (!$path) {
+            throw new Exception("Log path cannot be empty. Call init() with a valid path.");
+        }
+        $this->logPath = rtrim($path, '/');
     }
 
     /**
@@ -108,6 +113,7 @@ class PulseLogger
      */
     public function log($type, string $level, $message)
     {
+        $this->ensureInit();
         switch (strtolower(trim($type))) {
             case 'json':
                 // Lazily instantiate JsonFormatter if not already created
@@ -124,6 +130,18 @@ class PulseLogger
                 if (!$this->text_formatter) $this->text_formatter = new TextFormatter($this->logPath);
                 $this->text_formatter->log($level, $message);
                 break;
+        }
+    }
+
+    /**
+     * Ensure that the logger has been initialized with a valid log path.
+     * 
+     * @throws Exception if init() was not called before logging.
+     */
+    private function ensureInit()
+    {
+        if (!$this->logPath) {
+            throw new Exception("Logger not initialized. Call init() with a valid path first.");
         }
     }
 }
