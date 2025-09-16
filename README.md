@@ -9,7 +9,7 @@ It supports **text and JSON logging**, provides detailed log metadata, and follo
 |---------|-------------|
 | Singleton Logger | Consistent logging across the application. Calling `getInstance()` always returns the same logger instance. |
 | TextFormatter & JsonFormatter | Supports both text and JSON output. |
-| Configurable Log Path | The log path must be initialized once using `init()` before logging. |
+| Configurable Log Path | The log path must be initialized once using `init()` before logging. Once set, it is used globally across your application, no need to re-initialize in controllers or classes. |
 | Detailed Metadata | Timestamp, Level, Message, File, Class, Function, Request ID, Client IP. |
 | JSON Lines | Each JSON entry is a single object, easy for programmatic processing. |
 | Text Separator | Adds a separator line for readability in text logs. |
@@ -39,14 +39,15 @@ class MyClass
 {
     public function test()
     {
+        $logger = PulseLogger::getInstance();
+
         $url = 'www.example.com';
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $response = curl_exec($ch);
 
         if (curl_errno($ch)) {
-            $logger = PulseLogger::getInstance();
-            $logger->init(__DIR__ . '/logs'); // Initialize log path
+            // Logger path already initialized in bootstrap, no need to init again
             $logger->info('text', curl_error($ch));
         }
 
@@ -54,6 +55,7 @@ class MyClass
         echo $response;
     }
 }
+
 
 ```
 
