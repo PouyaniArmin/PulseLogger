@@ -14,47 +14,67 @@ It supports **text and JSON logging**, provides detailed log metadata, and follo
 | JSON Lines | Each JSON entry is a single object, easy for programmatic processing. |
 | Text Separator | Adds a separator line for readability in text logs. |
 
+## Installation
+
+PulseLogger can be installed via Composer in your project:
+
+```bash
+composer require pouyaniarmin/pulse-logger
+```
 ## Usage / Examples
 
 ### Basic Setup
 
 ```php
+<?php
 require_once "./vendor/autoload.php";
 
 use Armin\PulseLogger\PulseLogger;
 
-// Initialize logger with mandatory log path
+// Initialize logger with mandatory log path (once)
 $logger = PulseLogger::getInstance();
 $logger->init(__DIR__ . '/logs');
 
-// Log info message in text format
-$logger->info('text', 'This is an info message.');
+// Log an informational message in text format
+$logger->info('text', 'Application started successfully.');
 
-// Log error message in JSON format
-$logger->error('json', 'This is an error message.');
+// Log an error message in JSON format
+$logger->error('json', 'Failed to connect to the database.');
+
 ```
 ### Example in a Class
 ```php
-class MyClass
+<?php
+
+class UserService
 {
-    public function test()
+    public function fetchUserData(int $userId)
     {
         $logger = PulseLogger::getInstance();
 
-        $url = 'www.example.com';
+        $logger->info('text', "Fetching user data for user ID: $userId");
+
+        $url = "https://api.example.com/users/$userId";
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $response = curl_exec($ch);
 
         if (curl_errno($ch)) {
             // Logger path already initialized in bootstrap, no need to init again
-            $logger->info('text', curl_error($ch));
+            $logger->error('json', "Error fetching user data: " . curl_error($ch));
+        } else {
+            $logger->info('text', "User data fetched successfully for user ID: $userId");
         }
 
         curl_close($ch);
-        echo $response;
+        return $response;
     }
 }
+
+// Usage example
+$service = new UserService();
+$userData = $service->fetchUserData(42);
+echo $userData;
 
 
 ```
