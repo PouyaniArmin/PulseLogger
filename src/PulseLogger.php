@@ -37,7 +37,10 @@ class PulseLogger
     /**
      * Private constructor to enforce singleton pattern
      */
-    private function __construct() {}
+    private function __construct()
+    {
+        echo $this->logPath;
+    }
 
     /**
      * Prevent unserialization of singleton
@@ -69,19 +72,30 @@ class PulseLogger
     }
     /**
      * Initialize the logger with a mandatory log path.
-     * 
-     * @param string $path Absolute or relative path where logs should be stored.
-     * @throws Exception if the provided path is empty.
+     *
+     * Sets the path where all log files will be stored. This method should
+     * be called **once** during the bootstrap of the application before
+     * any log is written. If called multiple times, subsequent calls are ignored.
+     *
+     * @param string $path Absolute or relative path for log storage
+     * @throws Exception if the provided path is empty
      */
-
     public function init(string $path)
     {
+        if ($this->logPath) return;
         if (!$path) {
             throw new Exception("Log path cannot be empty. Call init() with a valid path.");
         }
         $this->logPath = rtrim($path, '/');
+        if (!is_dir($this->logPath)) mkdir($this->logPath, 0777, true);
     }
-
+    public function getLogPath(): string
+    {
+        if (!$this->logPath) {
+            throw new Exception("Logger not initialized. Call init() first.");
+        }
+        return $this->logPath;
+    }
     /**
      * Log an info-level message
      *
@@ -113,35 +127,22 @@ class PulseLogger
      */
     public function log($type, string $level, $message)
     {
-        $this->ensureInit();
         switch (strtolower(trim($type))) {
             case 'json':
                 // Lazily instantiate JsonFormatter if not already created
-                if (!$this->json_formatter) $this->json_formatter = new JsonFormatter($this->logPath);
+                if (!$this->json_formatter) $this->json_formatter = new JsonFormatter($this->getLogPath());
                 $this->json_formatter->log($level, $message);
                 break;
             case 'text':
                 // Lazily instantiate TextFormatter if not already created
-                if (!$this->text_formatter) $this->text_formatter = new TextFormatter($this->logPath);
+                if (!$this->text_formatter) $this->text_formatter = new TextFormatter($this->getLogPath());
                 $this->text_formatter->log($level, $message);
                 break;
             default:
                 // Default to TextFormatter
-                if (!$this->text_formatter) $this->text_formatter = new TextFormatter($this->logPath);
+                if (!$this->text_formatter) $this->text_formatter = new TextFormatter($this->getLogPath());
                 $this->text_formatter->log($level, $message);
                 break;
-        }
-    }
-
-    /**
-     * Ensure that the logger has been initialized with a valid log path.
-     * 
-     * @throws Exception if init() was not called before logging.
-     */
-    private function ensureInit()
-    {
-        if (!$this->logPath) {
-            throw new Exception("Logger not initialized. Call init() with a valid path first.");
         }
     }
 }
